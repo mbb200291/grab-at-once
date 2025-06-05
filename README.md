@@ -19,7 +19,7 @@ A chrome extension allow for downloading files by mouse dragging-box.
 ## Bugs
 
 - [x] 框選區塊停留沒有跟著捲動下來
-- [ ] 框選區沒有消失
+- [x] 框選區沒有消失
 
 ## Attribution
 
