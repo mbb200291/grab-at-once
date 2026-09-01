@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grab at Once! — Privacy Policy</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 720px;
+      margin: 60px auto;
+      padding: 0 24px;
+      color: #222;
+      line-height: 1.7;
+    }
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.1rem; margin-top: 2rem; }
+    p, li { font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy — Grab at Once!</h1>
+  <p><strong>Last updated:</strong> 2026-03-19</p>
+
+  <h2>Overview</h2>
+  <p>
+    Grab at Once! is a Chrome extension that allows users to batch-download files
+    by drawing a drag-selection box over links on a webpage.
+  </p>
+
+  <h2>Data Collection</h2>
+  <p>
+    This extension <strong>does not collect, store, transmit, or share any personal data</strong>
+    or browsing information. Specifically:
+  </p>
+  <ul>
+    <li>No browsing history is recorded.</li>
+    <li>No URLs, page content, or user activity is sent to any server.</li>
+    <li>The only data stored is the extension's enabled/disabled state, saved locally
+        in <code>chrome.storage.local</code> on your own device.</li>
+  </ul>
+
+  <h2>Permissions</h2>
+  <p>The extension requests the following permissions:</p>
+  <ul>
+    <li><strong>storage</strong> — to save the on/off toggle state locally on your device.</li>
+    <li><strong>activeTab / scripting</strong> — to inject the drag-selection UI into the
+        current tab when the extension is enabled.</li>
+    <li><strong>host_permissions (&lt;all_urls&gt;)</strong> — required so the drag-selection
+        script can run on any webpage the user chooses to use it on. No data from these
+        pages is read or transmitted.</li>
+  </ul>
+
+  <h2>Third Parties</h2>
+  <p>This extension does not use any third-party services, analytics, or tracking.</p>
+
+  <h2>Contact</h2>
+  <p>If you have any questions, please open an issue on the
+    <a href="https://github.com/linbangqi/grabatonce">GitHub repository</a>.
+  </p>
+</body>
+</html>

@@ -1,99 +1,81 @@
-chrome.runtime.onInstalled.addListener(() => {
-  //   chrome.storage.sync.set({ color });
-  console.log("on installed!");
-});
+const ENABLED_ICON_PATH = {
+  16: "/images/grab_16.png",
+  32: "/images/grab_32.png",
+  64: "/images/grab_64.png",
+  128: "/images/grab_128.png",
+  256: "/images/grab_256.png",
+  512: "/images/grab_512.png",
+};
 
-// enable function
-function closureAction() {
-  var actionEnabled = false;
+const DISABLED_ICON_PATH = {
+  16: "/images/grab_wb_16.png",
+  32: "/images/grab_wb_32.png",
+  64: "/images/grab_wb_64.png",
+  128: "/images/grab_wb_128.png",
+  256: "/images/grab_wb_256.png",
+  512: "/images/grab_wb_512.png",
+};
 
-  function switchAction() {
-    if (actionEnabled === true) {
-      console.log(`disable`);
-
-      // save data value
-      // chrome.storage.sync.set({ grabatonce_state: false });
-      chrome.storage.local.set({ gao: false });
-
-      chrome.action.setIcon({
-        path: {
-          16: "/images/grab_wb_16.png",
-          32: "/images/grab_wb_32.png",
-          64: "/images/grab_wb_64.png",
-          128: "/images/grab_wb_128.png",
-          256: "/images/grab_wb_256.png",
-          512: "/images/grab_wb_512.png",
-        },
-      });
-      actionEnabled = false;
-    } else {
-      console.log(`enable`);
-
-      // chrome.storage.sync.set({ grabatonce_state: true });
-      chrome.storage.local.set({ gao: true });
-      chrome.storage.local.get("gao", function (result) {
-        console.log(result["gao"]);
-      });
-      chrome.action.setIcon({
-        path: {
-          16: "/images/grab_16.png",
-          32: "/images/grab_32.png",
-          64: "/images/grab_64.png",
-          128: "/images/grab_128.png",
-          256: "/images/grab_256.png",
-          512: "/images/grab_512.png",
-        },
-      });
-      actionEnabled = true;
-    }
-  }
-  // function getTitle() {
-  //   // document.body.style.backgroundColor = "orange";
-  //   document.addEventListener("keydown", action);
-  //   // return document.title;
-  // }
-  // function action(evt) {
-  //   alert(`key down ${evt.key}`);
-  // }
-  // function attachAction() {
-  //   document.addEventListener("keydown", action, true);
-  // }
-  // function detachAction() {
-  //   document.removeEventListener("keydown", action, true);
-  // }
-  function activateGrabAtOnce(tab) {
-    switchAction();
-    // if (actionEnabled) {
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ["dragbox.js"],
-      // files: ["content.js"],
-      // func: attachAction,
-      // func: getTitle,
-    });
-    // (injectionResults) => {
-    //   for (const frameResult of injectionResults)
-    //     console.log("Frame Title: " + frameResult.result);
-    // }
-    // );
-  }
-  console.log(actionEnabled);
-  chrome.storage.local.get("gao", function (result) {
-    console.log(">>>" + result["gao"]);
+async function syncActionUi(enabled) {
+  await chrome.action.setIcon({
+    path: enabled ? ENABLED_ICON_PATH : DISABLED_ICON_PATH,
   });
-  // else {
-  //   chrome.scripting.executeScript({
-  //     target: { tabId: tab.id },
-  //     func: getTitle,
-  //   });
-  // }
-  return activateGrabAtOnce;
+  await chrome.action.setBadgeBackgroundColor({ color: "#0ea5e9" });
+  await chrome.action.setBadgeText({ text: enabled ? "ON" : "" });
+  await chrome.action.setTitle({
+    title: enabled ? "Grab at Once! (Enabled)" : "Grab at Once! (Disabled)",
+  });
 }
 
-chrome.action.onClicked.addListener(closureAction());
+async function getEnabledState() {
+  const { gao = false } = await chrome.storage.local.get({ gao: false });
+  return Boolean(gao);
+}
 
-// set badge
-// chrome.action.setBadgeText({ text: "on" });
-// chrome.action.setBadgeBackgroundColor({
-//   color: "#00ff00",
-// });
+async function setEnabledState(enabled) {
+  await chrome.storage.local.set({ gao: enabled });
+  await syncActionUi(enabled);
+}
+
+async function initializeState() {
+  const enabled = await getEnabledState();
+  await syncActionUi(enabled);
+}
+
+chrome.runtime.onInstalled.addListener(async () => {
+  console.log("Grab at Once installed");
+  const { gao } = await chrome.storage.local.get("gao");
+  if (typeof gao === "undefined") {
+    await chrome.storage.local.set({ gao: false });
+  }
+  await initializeState();
+});
+
+chrome.runtime.onStartup.addListener(async () => {
+  await initializeState();
+});
+
+chrome.action.onClicked.addListener(async (tab) => {
+  const current = await getEnabledState();
+  const next = !current;
+  await setEnabledState(next);
+
+  if (!tab?.id) {
+    return;
+  }
+
+  await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    files: ["dragbox.js"],
+  });
+
+  await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    func: (enabled) => {
+      if (typeof window.__grabatonce_setEnabled === "function") {
+        window.__grabatonce_setEnabled(enabled);
+      }
+    },
+    args: [next],
+  });
+});

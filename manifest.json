@@ -1,12 +1,13 @@
 {
   "name": "Grab at Once!",
-  "description": "A simple extension helping download multiple files by mouse draging!",
+  "description": "A simple extension for helping download multiple files by mouse dragging box",
   "version": "0.1.2",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
   },
   "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
   "action": {
     "default_icon": {
       "16": "/images/grab_wb_16.png",
