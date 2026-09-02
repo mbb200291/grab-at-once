@@ -44,11 +44,9 @@
   <p>The extension requests the following permissions:</p>
   <ul>
     <li><strong>storage</strong> — to save the on/off toggle state locally on your device.</li>
-    <li><strong>activeTab / scripting</strong> — to inject the drag-selection UI into the
-        current tab when the extension is enabled.</li>
-    <li><strong>host_permissions (&lt;all_urls&gt;)</strong> — required so the drag-selection
-        script can run on any webpage the user chooses to use it on. No data from these
-        pages is read or transmitted.</li>
+    <li><strong>activeTab / scripting</strong> — a click on the extension icon temporarily
+        grants access to the current tab so the drag-selection UI can be injected. No data
+        from the page is read or transmitted.</li>
   </ul>
 
   <h2>Third Parties</h2>

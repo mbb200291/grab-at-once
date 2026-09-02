@@ -25,11 +25,11 @@ Last reviewed: 2026-03-17
 ### Medium priority
 
 - [x] Normalize selection-box coordinates and simplify rectangle collision detection.
-- [ ] Add tests for selection matching, including every drag direction and boundary cases.
+- [x] Add tests for selection matching, including every drag direction and boundary cases.
 - [x] Expand the supported file extensions and handle URLs containing query parameters.
 - [x] Add guards and error handling for DOM access, downloads, and storage operations.
-- [ ] Split `dragbox.js` into focused state, selection, DOM, and download modules.
-- [ ] Review the `host_permissions` and content-script strategy based on the intended product scope.
+- [x] Split `dragbox.js` into focused state, selection, DOM, and download modules.
+- [x] Review the `host_permissions` and content-script strategy based on the intended product scope.
 
 ### Low priority
 
