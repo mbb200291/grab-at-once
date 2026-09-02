@@ -15,7 +15,7 @@
 **Files:**
 - Create: `test/selection.test.js`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```js
 const test = require("node:test");
@@ -58,13 +58,13 @@ test("filterDownloadableLinks keeps only overlapping downloadable links", () => 
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `node --test test/selection.test.js`
 
 Expected: failure because `selection.js` does not exist.
 
-- [ ] **Step 3: Commit the failing test**
+- [x] **Step 3: Commit the failing test**
 
 Run: `git add test/selection.test.js && git commit -m "test: cover selection matching"`
 
@@ -74,7 +74,7 @@ Run: `git add test/selection.test.js && git commit -m "test: cover selection mat
 - Create: `selection.js`
 - Test: `test/selection.test.js`
 
-- [ ] **Step 1: Add the minimal helper module**
+- [x] **Step 1: Add the minimal helper module**
 
 ```js
 (function (root) {
@@ -89,13 +89,13 @@ Run: `git add test/selection.test.js && git commit -m "test: cover selection mat
 })(globalThis);
 ```
 
-- [ ] **Step 2: Run the test to verify it passes**
+- [x] **Step 2: Run the test to verify it passes**
 
 Run: `node --test test/selection.test.js`
 
 Expected: 4 passing tests.
 
-- [ ] **Step 3: Commit the helper module**
+- [x] **Step 3: Commit the helper module**
 
 Run: `git add selection.js test/selection.test.js && git commit -m "feat: extract selection matching helpers"`
 
@@ -106,21 +106,21 @@ Run: `git add selection.js test/selection.test.js && git commit -m "feat: extrac
 - Modify: `background.js`
 - Test: `test/selection.test.js`
 
-- [ ] **Step 1: Replace local selection rules in `dragbox.js`**
+- [x] **Step 1: Replace local selection rules in `dragbox.js`**
 
 Use `globalThis.GrabAtOnceSelection` as the source for `selectionRect` and `filterDownloadableLinks`. Convert each anchor into `{ href, element, rect }`, filter it, then map matches back to `element` before highlight and download. Exit the IIFE if the helper API is unavailable.
 
-- [ ] **Step 2: Inject both scripts in order**
+- [x] **Step 2: Inject both scripts in order**
 
 Change the `files` passed to `chrome.scripting.executeScript` in `background.js` to `["selection.js", "dragbox.js"]`.
 
-- [ ] **Step 3: Run tests and syntax checks**
+- [x] **Step 3: Run tests and syntax checks**
 
 Run: `node --test test/selection.test.js`
 
 Run: `node --check selection.js && node --check dragbox.js && node --check background.js`
 
-- [ ] **Step 4: Commit the browser integration**
+- [x] **Step 4: Commit the browser integration**
 
 Run: `git add background.js dragbox.js selection.js test/selection.test.js && git commit -m "refactor: separate selection logic from DOM handling"`
 
@@ -131,15 +131,15 @@ Run: `git add background.js dragbox.js selection.js test/selection.test.js && gi
 - Modify: `privacy.html`
 - Modify: `docs/plan.md`
 
-- [ ] **Step 1: Remove `host_permissions` from `manifest.json`**
+- [x] **Step 1: Remove `host_permissions` from `manifest.json`**
 
 Delete the `"host_permissions": ["<all_urls>"],` entry. Retain `activeTab` and `scripting` because a toolbar click grants temporary access to the active tab and initiates script injection.
 
-- [ ] **Step 2: Update documentation**
+- [x] **Step 2: Update documentation**
 
 Change `privacy.html` to describe `activeTab / scripting` as temporary access granted by a click, and remove the `<all_urls>` permission entry. Mark the selected three medium-priority items complete in `docs/plan.md`.
 
-- [ ] **Step 3: Verify manifest and all tests**
+- [x] **Step 3: Verify manifest and all tests**
 
 Run: `node --test`
 
@@ -147,6 +147,6 @@ Run: `node -e 'JSON.parse(require("fs").readFileSync("manifest.json", "utf8")); 
 
 Run: `git diff --check`
 
-- [ ] **Step 4: Commit the permission review**
+- [x] **Step 4: Commit the permission review**
 
 Run: `git add manifest.json privacy.html docs/plan.md && git commit -m "chore: limit extension host access"`
