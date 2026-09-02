@@ -66,7 +66,7 @@ chrome.action.onClicked.addListener(async (tab) => {
 
   await chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    files: ["dragbox.js"],
+    files: ["selection.js", "dragbox.js"],
   });
 
   await chrome.scripting.executeScript({

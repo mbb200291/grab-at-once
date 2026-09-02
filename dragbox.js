@@ -1,4 +1,10 @@
 (function () {
+  const selection = globalThis.GrabAtOnceSelection;
+
+  if (!selection) {
+    return;
+  }
+
   if (window.__grabatonce_initialized) {
     chrome.storage.local.get({ gao: false }, ({ gao }) => {
       if (typeof window.__grabatonce_setEnabled === "function") {
@@ -9,11 +15,6 @@
   }
 
   window.__grabatonce_initialized = true;
-
-  const DOWNLOADABLE_EXTENSIONS = [
-    ".gif", ".pdf", ".ppt", ".pptx", ".jpg", ".jpeg",
-    ".png", ".zip", ".mp4", ".mp3", ".svg", ".webp",
-  ];
 
   let enabled = false;
   let startX = 0;
@@ -69,15 +70,10 @@
 
     clearActiveSelection();
 
-    // top = min Y（靠近頁面頂端），bottom = max Y（靠近頁面底部）
-    const dragbox = {
-      left: Math.min(startX, endX),
-      top: Math.min(startY, endY),
-      right: Math.max(startX, endX),
-      bottom: Math.max(startY, endY),
-    };
-
-    const selected = filter(getDownloadableElements(), dragbox);
+    const dragbox = selection.selectionRect(startX, startY, endX, endY);
+    const selected = selection
+      .filterDownloadableLinks(getDownloadableLinks(), dragbox)
+      .map((link) => link.element);
     highlightElements(selected);
     downloadBatch(selected);
   }
@@ -92,33 +88,12 @@
     };
   }
 
-  function getDownloadableElements() {
-    const links = document.querySelectorAll("a[href]");
-    return Array.from(links).filter((el) => {
-      try {
-        const pathname = new URL(el.href).pathname.toLowerCase();
-        return DOWNLOADABLE_EXTENSIONS.some((ext) => pathname.endsWith(ext));
-      } catch {
-        return false;
-      }
-    });
-  }
-
-  // AABB overlap：兩矩形在 x 與 y 軸上皆重疊則判定為命中
-  function checkInside(elRect, dragbox) {
-    const xOverlap = elRect.left < dragbox.right && elRect.right > dragbox.left;
-    const yOverlap = elRect.top < dragbox.bottom && elRect.bottom > dragbox.top;
-    return xOverlap && yOverlap;
-  }
-
-  function filter(downloadableElements, dragbox) {
-    const selectedElements = [];
-    for (const element of downloadableElements) {
-      if (checkInside(getOffset(element), dragbox)) {
-        selectedElements.push(element);
-      }
-    }
-    return selectedElements;
+  function getDownloadableLinks() {
+    return Array.from(document.querySelectorAll("a[href]")).map((element) => ({
+      element,
+      href: element.href,
+      rect: getOffset(element),
+    }));
   }
 
   function highlightElements(elements) {
